@@ -1,7 +1,42 @@
 import Link from "next/link";
 import React from "react";
+import { useFormik } from "formik";
+import { SignupSchema } from "@/validations/signupSchema";
+import { registerUser } from "./api";
+import { useRouter } from "next/navigation";
+
+type FormValues = {
+  username: string;
+  password: string;
+  confirmPassword: string;
+  token: string;
+};
 
 const signup = () => {
+  const router = useRouter();
+
+  const formik = useFormik<FormValues>({
+    initialValues: {
+      username: "",
+      password: "",
+      confirmPassword: "",
+      token: "",
+    },
+    validationSchema: SignupSchema,
+    onSubmit,
+  });
+
+  async function onSubmit(values: FormValues) {
+    try {
+      const userData = await registerUser({
+        username: values.username,
+        password: values.password,
+        token: values.token,
+      });
+      console.log(userData);
+      router.push("/");
+    } catch (err: any) {}
+  }
   return (
     <div className="w-screen">
       <div className="flex justify-center mt-12 flex-col items-center">
@@ -17,7 +52,10 @@ const signup = () => {
         </svg>
         <div className="mt-8 text-2xl">Sign up to Github</div>
         <div className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-[#f6f8fa] border-[#d8dee4] border-[1px] mt-8 w-[30rem]">
-          <form action="">
+          <form
+            onSubmit={formik.handleSubmit}
+            onReset={() => formik.resetForm()}
+          >
             <div className="px-6 py-4">
               <div className="flex flex-col">
                 <label htmlFor="username" className="text-base mb-2">
@@ -25,35 +63,64 @@ const signup = () => {
                 </label>
                 <input
                   type="text"
-                  id="first_name"
+                  id="username"
                   className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-500 block w-full p-1.5"
                   placeholder="Enter your username"
                   required
+                  {...formik.getFieldProps("username")}
                 />
+                {formik.errors.username && formik.touched.username ? (
+                  <div>{formik.errors.username}</div>
+                ) : null}
               </div>
               <div className="flex flex-col mt-4">
                 <label htmlFor="password" className="text-base mb-2">
                   Password
                 </label>
                 <input
-                  type="text"
-                  id="first_name"
+                  type="password"
+                  id="password"
                   className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-500 block w-full p-1.5"
                   placeholder="Enter your username"
                   required
+                  {...formik.getFieldProps("password")}
                 />
+                {formik.errors.password && formik.touched.password ? (
+                  <div>{formik.errors.password}</div>
+                ) : null}
               </div>
               <div className="flex flex-col mt-4">
-                <label htmlFor="password" className="text-base mb-2">
+                <label htmlFor="confirmPassword" className="text-base mb-2">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-500 block w-full p-1.5"
+                  placeholder="Enter your username"
+                  required
+                  {...formik.getFieldProps("confirmPassword")}
+                />
+                {formik.errors.confirmPassword &&
+                formik.touched.confirmPassword ? (
+                  <div>{formik.errors.confirmPassword}</div>
+                ) : null}
+              </div>
+              <div className="flex flex-col mt-4">
+                <label htmlFor="token" className="text-base mb-2">
                   Github Token
                 </label>
                 <input
                   type="text"
-                  id="first_name"
+                  id="token"
                   className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-500 block w-full p-1.5"
                   placeholder="Enter your github token"
                   required
+                  {...formik.getFieldProps("token")}
                 />
+                {formik.errors.token && formik.touched.token ? (
+                  <div>{formik.errors.token}</div>
+                ) : null}
               </div>
               <button
                 type="submit"
