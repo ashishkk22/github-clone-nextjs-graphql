@@ -1,10 +1,38 @@
+import { SignInSchema } from "@/validations/signinSchema";
+import { useFormik } from "formik";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
+import { loginUser } from "./api";
+
+type FormValues = {
+  username: string;
+  password: string;
+};
 
 const login = () => {
+  const router = useRouter();
+
+  const formik = useFormik<FormValues>({
+    initialValues: {
+      username: "",
+      password: "",
+    },
+    validationSchema: SignInSchema,
+    onSubmit,
+  });
+  async function onSubmit(values: FormValues) {
+    try {
+      const userData = await loginUser({
+        username: values.username,
+        password: values.password,
+      });
+      router.push("/");
+    } catch (err: any) {}
+  }
   return (
     <div className="w-screen">
-      <div className="flex justify-center mt-12 flex-col items-center">
+      <div className="flex flex-col items-center justify-center mt-12">
         <svg
           height="48"
           aria-hidden="true"
@@ -18,36 +46,47 @@ const login = () => {
         </svg>
         <div className="mt-8 text-2xl">Sign in to Github</div>
         <div className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-[#f6f8fa] border-[#d8dee4] border-[1px] mt-8 w-[30rem]">
-          <form action="">
+          <form
+            onSubmit={formik.handleSubmit}
+            onReset={() => formik.resetForm()}
+          >
             <div className="px-6 py-4">
               <div className="flex flex-col">
-                <label htmlFor="username" className="text-base mb-2">
+                <label htmlFor="username" className="mb-2 text-base">
                   Username
                 </label>
                 <input
                   type="text"
-                  id="first_name"
+                  id="username"
                   className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-500 block w-full p-1.5"
                   placeholder="Enter your username"
                   required
+                  {...formik.getFieldProps("username")}
                 />
+                {formik.errors.username && formik.touched.username ? (
+                  <div className="text-sm">{formik.errors.username}</div>
+                ) : null}
               </div>
               <div className="flex flex-col mt-4">
-                <label htmlFor="password" className="text-base mb-2">
+                <label htmlFor="password" className="mb-2 text-base">
                   Password
                 </label>
                 <input
-                  type="text"
-                  id="first_name"
+                  type="password"
+                  id="password"
                   className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-500 block w-full p-1.5"
-                  placeholder="Enter your username"
+                  placeholder="Enter your password"
                   required
+                  {...formik.getFieldProps("password")}
                 />
+                {formik.errors.password && formik.touched.password ? (
+                  <div className="text-sm">{formik.errors.password}</div>
+                ) : null}
               </div>
 
               <button
                 type="submit"
-                className="bg-green-700 text-white w-full mt-8 rounded-lg p-2"
+                className="w-full p-2 mt-8 text-white bg-green-700 rounded-lg"
               >
                 Sign in
               </button>

@@ -39,7 +39,7 @@ const signup = () => {
   }
   return (
     <div className="w-screen">
-      <div className="flex justify-center mt-12 flex-col items-center">
+      <div className="flex flex-col items-center justify-center mt-12">
         <svg
           height="48"
           aria-hidden="true"
@@ -58,7 +58,7 @@ const signup = () => {
           >
             <div className="px-6 py-4">
               <div className="flex flex-col">
-                <label htmlFor="username" className="text-base mb-2">
+                <label htmlFor="username" className="mb-2 text-base">
                   Username
                 </label>
                 <input
@@ -70,11 +70,11 @@ const signup = () => {
                   {...formik.getFieldProps("username")}
                 />
                 {formik.errors.username && formik.touched.username ? (
-                  <div>{formik.errors.username}</div>
+                  <div className="text-sm">{formik.errors.username}</div>
                 ) : null}
               </div>
               <div className="flex flex-col mt-4">
-                <label htmlFor="password" className="text-base mb-2">
+                <label htmlFor="password" className="mb-2 text-base">
                   Password
                 </label>
                 <input
@@ -86,12 +86,12 @@ const signup = () => {
                   {...formik.getFieldProps("password")}
                 />
                 {formik.errors.password && formik.touched.password ? (
-                  <div>{formik.errors.password}</div>
+                  <div className="text-sm">{formik.errors.password}</div>
                 ) : null}
               </div>
               <div className="flex flex-col mt-4">
-                <label htmlFor="confirmPassword" className="text-base mb-2">
-                  Password
+                <label htmlFor="confirmPassword" className="mb-2 text-base">
+                  Confirm password
                 </label>
                 <input
                   type="password"
@@ -103,11 +103,11 @@ const signup = () => {
                 />
                 {formik.errors.confirmPassword &&
                 formik.touched.confirmPassword ? (
-                  <div>{formik.errors.confirmPassword}</div>
+                  <div className="text-sm">{formik.errors.confirmPassword}</div>
                 ) : null}
               </div>
               <div className="flex flex-col mt-4">
-                <label htmlFor="token" className="text-base mb-2">
+                <label htmlFor="token" className="mb-2 text-base">
                   Github Token
                 </label>
                 <input
@@ -119,12 +119,12 @@ const signup = () => {
                   {...formik.getFieldProps("token")}
                 />
                 {formik.errors.token && formik.touched.token ? (
-                  <div>{formik.errors.token}</div>
+                  <div className="text-sm">{formik.errors.token}</div>
                 ) : null}
               </div>
               <button
                 type="submit"
-                className="bg-green-700 text-white w-full mt-8 rounded-lg p-2"
+                className="w-full p-2 mt-8 text-white bg-green-700 rounded-lg"
               >
                 Sign up
               </button>
