@@ -9,11 +9,16 @@ const iv = process.env.CRYPTO_IV;
 
 module.exports.authMiddleware = async (req, res, next) => {
   try {
-    const { TOKEN } = req.cookies;
-    if (!TOKEN) {
+    let { TOKEN } = req.cookies;
+    if (req.headers.authorization === "" && !TOKEN) {
+      //return if token is not there in the header or cookie
       return res.status(401).json({
         message: "Please login first",
       });
+    }
+    if (TOKEN === undefined) {
+      //getting the token from the header if it is not there in the cookie
+      TOKEN = req.headers.authorization.split(" ")[1];
     }
     const { id } = jwt.verify(TOKEN, process.env.JWT_SECRET);
     const user = await userModel.findById(id).select("-password");
