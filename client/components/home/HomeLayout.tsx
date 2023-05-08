@@ -23,17 +23,16 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ children }) => {
   const router = useRouter();
   const activeSection = router.pathname.substring(1, router.pathname.length);
   return (
-    <div className="flex flex-row min-h-screen text-white pt-14 bg-slate-900">
+    <div className="flex flex-col min-h-screen text-white pt-14 bg-slate-900 xl:px-48 lg:flex-row">
       <div className="flex flex-col items-center basis-1/3">
         <Sidebar />
       </div>
-      <div className="basis-8/12">
-        <div className="flex gap-4">
+      <div className="m-4 basis-8/12">
+        <div className="flex gap-4 overflow-auto">
           <CategoryBtn
             icon={BsBook}
             name="Overview"
             isActive={PageSections.overview === activeSection}
-            count={22}
           />
           <CategoryBtn
             icon={GoRepo}
@@ -57,7 +56,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ children }) => {
           />
         </div>
         <hr className="h-px bg-gray-700 border-0" />
-        <div>{children}</div>
+        <div className="flex justify-center lg:justify-start">{children}</div>
       </div>
     </div>
   );

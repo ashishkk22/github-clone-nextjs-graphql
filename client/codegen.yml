@@ -1,0 +1,13 @@
+overwrite: true
+schema: "modules/graphql/schema/schema.graphql"
+documents: "modules/graphql/**/*.graphql"
+require:
+  - ts-node/register
+generates:
+  generated/:
+    preset: "client"
+    # disabled plugins due to error of duplicate declaration
+    # plugins:
+    #   - "typescript"
+    #   - "typescript-operations"
+    #   - "typescript-react-apollo"

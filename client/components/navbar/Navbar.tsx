@@ -4,6 +4,8 @@ import SearchBar from "./SearchBar";
 import Category from "./Category";
 import Profile from "./Profile";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { useQuery } from "@apollo/client";
+import { GetUserAvatarDocument } from "@/generated/graphql";
 
 const Navbar = () => {
   const categories = [
@@ -13,6 +15,10 @@ const Navbar = () => {
     "Marketplace",
     "Explore",
   ];
+  const { data, error } = useQuery(GetUserAvatarDocument);
+  if (error) {
+    return null;
+  }
   return (
     <div className="flex items-center justify-between w-full p-4 text-white shadow-sm bg-slate-800">
       <div className="flex lg:hidden">
@@ -30,7 +36,7 @@ const Navbar = () => {
       <div className="flex lg:hidden">
         <Logo color="white" />
       </div>
-      <Profile />
+      <Profile imgSrc={data?.viewer.avatarUrl} />
     </div>
   );
 };

@@ -1,10 +1,20 @@
 import React, { ReactElement } from "react";
-import Layout from "../layout";
-import HomeLayout from "../home/HomeLayout";
 import { NextPageWithLayout } from "@/pages/_app";
 import RepositoryCard from "./RepositoryCard";
+import { GetServerSidePropsContext } from "next";
+import { addApolloState, initializeApollo } from "@/lib/apolloClient";
+import { GetReposDocument } from "@/generated/graphql";
+import { useQuery } from "@apollo/client";
 
 const Repository: NextPageWithLayout = () => {
+  const {
+    error: Err,
+    loading: Loading,
+    data: repos,
+  } = useQuery(GetReposDocument, {
+    variables: { name: "ashishkk22", first: 20, after: null },
+  });
+  console.log(repos);
   return (
     <div className="w-[93%]">
       <div className="flex my-4">
@@ -106,3 +116,23 @@ const Repository: NextPageWithLayout = () => {
 };
 
 export default Repository;
+
+export const getServerSideProps = async ({
+  req,
+}: GetServerSidePropsContext) => {
+  try {
+    const userToken = req.cookies?.TOKEN;
+    const apolloClient = initializeApollo(null, userToken);
+    await apolloClient.query({
+      query: GetReposDocument,
+      variables: { name: "ashishkk22", first: 20, after: null },
+    });
+    return addApolloState(apolloClient, {
+      props: {},
+    });
+  } catch (err) {
+    return {
+      props: {},
+    };
+  }
+};
