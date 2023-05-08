@@ -1,5 +1,4 @@
-import Layout from "@/components/layout";
-import client from "@/lib/apolloClient";
+import { useApollo } from "@/lib/apolloClient";
 import "@/styles/globals.css";
 import { ApolloProvider } from "@apollo/client";
 import type { ReactElement, ReactNode } from "react";
@@ -16,11 +15,10 @@ type AppPropsWithLayout = AppProps & {
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout || (page => page);
+  const apolloClient = useApollo(pageProps);
   return getLayout(
-    <ApolloProvider client={client}>
-      {/* <Layout> */}
+    <ApolloProvider client={apolloClient}>
       <Component {...pageProps} />
-      {/* </Layout> */}
     </ApolloProvider>
   );
 }

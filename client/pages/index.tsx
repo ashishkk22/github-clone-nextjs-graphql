@@ -5,8 +5,10 @@ import { gql, useQuery } from "@apollo/client";
 import { NextPageWithLayout } from "./_app";
 import { ReactElement } from "react";
 import Layout from "@/components/layout";
-import Repository from "@/components/home/Repository";
+import Repository from "@/components/Repositories/Repository";
 import HomeLayout from "@/components/home/HomeLayout";
+import { GetServerSidePropsContext } from "next";
+import { addApolloState, initializeApollo } from "@/lib/apolloClient";
 
 export const CURRENT_USER = gql`
   fragment OneUser on User {
@@ -62,6 +64,23 @@ const Home: NextPageWithLayout = () => {
     </main>
   );
 };
+
+export const getServerSideProps = async ({
+  req,
+}: GetServerSidePropsContext) => {
+  const userToken = req.cookies?.TOKEN;
+  console.log(userToken, "user token ");
+  const apolloClient = initializeApollo(null, userToken);
+  await apolloClient.query({
+    query: GET_CURRENT_VIEWER,
+    //  variables: allPostsQueryVars,
+  });
+
+  return addApolloState(apolloClient, {
+    props: {},
+  });
+};
+
 Home.getLayout = function getLayout(page: ReactElement) {
   return (
     <Layout>
