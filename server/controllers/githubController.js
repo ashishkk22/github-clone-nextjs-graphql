@@ -24,7 +24,7 @@ module.exports.githubApi = async (req, res) => {
     });
   } catch (err) {
     return res.status(500).send({
-      errors: err.response.errors,
+      errors: err,
     });
   }
 };
