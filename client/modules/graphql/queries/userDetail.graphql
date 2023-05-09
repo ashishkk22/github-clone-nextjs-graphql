@@ -188,6 +188,7 @@ query getRepos($name: String!, $first: Int, $after: String) {
           url
           visibility
           forkCount
+          pushedAt
           stargazers(first: $first) {
             totalCount
           }

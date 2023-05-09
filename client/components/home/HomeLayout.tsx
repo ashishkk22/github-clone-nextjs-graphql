@@ -23,7 +23,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ children }) => {
   const router = useRouter();
   const activeSection = router.pathname.substring(1, router.pathname.length);
   return (
-    <div className="flex flex-col min-h-screen text-white pt-14 bg-slate-900 xl:px-48 lg:flex-row">
+    <div className="flex flex-col min-h-screen text-white pt-14 bg-slate-900 xl:px-32 lg:flex-row">
       <div className="flex flex-col items-center basis-1/3">
         <Sidebar />
       </div>

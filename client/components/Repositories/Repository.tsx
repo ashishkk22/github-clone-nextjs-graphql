@@ -5,16 +5,13 @@ import { GetServerSidePropsContext } from "next";
 import { addApolloState, initializeApollo } from "@/lib/apolloClient";
 import { GetReposDocument } from "@/generated/graphql";
 import { useQuery } from "@apollo/client";
+import { timeAgo } from "@/utils/dateFormatter";
 
 const Repository: NextPageWithLayout = () => {
-  const {
-    error: Err,
-    loading: Loading,
-    data: repos,
-  } = useQuery(GetReposDocument, {
+  const { error, loading, data } = useQuery(GetReposDocument, {
     variables: { name: "ashishkk22", first: 20, after: null },
   });
-  console.log(repos);
+
   return (
     <div className="w-[93%]">
       <div className="flex my-4">
@@ -96,21 +93,27 @@ const Repository: NextPageWithLayout = () => {
           </ul>
         </div> */}
       </div>
-      <RepositoryCard />
-      <RepositoryCard />
-      <RepositoryCard />
-      <RepositoryCard />
-      <RepositoryCard />
-      <RepositoryCard />
-      <RepositoryCard />
-      <RepositoryCard />
-      <RepositoryCard />
-      <RepositoryCard />
-      <RepositoryCard />
-      <RepositoryCard />
-      <RepositoryCard />
-      <RepositoryCard />
-      <RepositoryCard />
+      {data?.user?.repositories?.edges?.map(edge => {
+        const title = edge?.node?.name ?? "";
+        const type = edge?.node?.visibility ?? "";
+        let language = "Javascript";
+        let color = "";
+        if (edge?.node?.languages?.edges?.length) {
+          color = edge?.node?.languages?.edges[0]?.node.color ?? "";
+          language = edge?.node?.languages?.edges[0]?.node.name ?? language;
+        }
+        let time = timeAgo(edge?.node?.pushedAt) ?? "";
+        return (
+          <RepositoryCard
+            key={edge?.cursor}
+            title={title}
+            type={type}
+            language={language}
+            languageColor={color}
+            time={time}
+          />
+        );
+      })}
     </div>
   );
 };
