@@ -17,9 +17,9 @@ const RepositoryCard: React.FC<RepositoryCardTypes> = ({
   time,
 }) => {
   return (
-    <div>
+    <>
       <hr className="h-px bg-gray-700 border-0" />
-      <div className="flex justify-between my-6">
+      <div className="flex justify-between my-6 cursor-pointer">
         <div className="flex flex-col">
           <div className="flex">
             <div className="text-xl font-bold text-blue-500">{title}</div>
@@ -51,7 +51,7 @@ const RepositoryCard: React.FC<RepositoryCardTypes> = ({
           Star
         </button>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -1,3 +1,4 @@
+# to get the user detail for the sidebar
 query GetUserDetail {
   viewer {
     id
@@ -36,146 +37,46 @@ query GetUserDetail {
   }
 }
 
-query GetUserAvatar {
+#to get the user's username
+query GetUsername {
   viewer {
-    avatarUrl
+    id
+    login
   }
 }
 
-query GetUserDetailSidebar {
-  viewer {
+# to get the user based on the userId
+query GetUserDetailByUserId($name: String!) {
+  user(login: $name) {
+    avatarUrl
     name
     login
-    avatarUrl
     location
     email
     followers(first: 1) {
       totalCount
+      nodes {
+        id
+      }
     }
     following(first: 1) {
       totalCount
+      nodes {
+        id
+      }
     }
   }
 }
 
-# query GetRepositories($name: String!, $first: Int, $after: String) {
-#   # viewer {
-#   #   id
-#   #   avatarUrl
-#   #   bio
-#   #   bioHTML
-#   #   company
-#   #   email
-#   #   name
-#   #   followers(first: 1) {
-#   #     totalCount
-#   #   }
-#   #   following(first: 1) {
-#   #     totalCount
-#   #   }
-#   #   repositories(
-#   #     first: $first
-#   #     after: $after
-#   #     orderBy: { field: PUSHED_AT, direction: DESC }
-#   #   ) {
-#   #     edges {
-#   #       node {
-#   #         id
-#   #         name
-#   #         description
-#   #         diskUsage
-#   #         visibility
-#   #         url
-#   #         forkCount
-#   #         languages(first: $first) {
-#   #           edges {
-#   #             node {
-#   #               id
-#   #               color
-#   #               name
-#   #             }
-#   #           }
-#   #         }
-#   #       }
-#   #     }
-#   #     totalCount
-#   #   }
-#   # }
-#   user(login: $name) {
-#     repositories(
-#       after: $after
-#       first: $first
-#       orderBy: { field: PUSHED_AT, direction: DESC }
-#     ) {
-#       edges {
-#         node {
-#           id
-#           name
-#           description
-#           pushedAt
-#           diskUsage
-#           url
-#           visibility
-#           forkCount
-#           stargazers(first: $first) {
-#             totalCount
-#           }
-#           refs(
-#             refPrefix: "refs/heads/"
-#             orderBy: { direction: DESC, field: TAG_COMMIT_DATE }
-#             first: 2
-#           ) {
-#             edges {
-#               node {
-#                 name
-#                 id
-#                 target {
-#                   ... on Commit {
-#                     history(first: 1) {
-#                       edges {
-#                         node {
-#                           committedDate
-#                           author {
-#                             name
-#                           }
-#                           message
-#                         }
-#                       }
-#                     }
-#                   }
-#                 }
-#               }
-#             }
-#           }
-#           languages(first: $first) {
-#             edges {
-#               node {
-#                 id
-#                 color
-#                 name
-#               }
-#             }
-#           }
-#         }
-#         cursor
-#       }
-#       totalCount
-#       pageInfo {
-#         startCursor
-#         endCursor
-#         hasNextPage
-#         hasPreviousPage
-#       }
-#     }
-#   }
-# }
-
-query getRepos($name: String!, $first: Int, $after: String) {
+# to get the repo data of the user
+query getRepos($name: String!, $first: Int, $after: String, $before: String) {
   user(login: $name) {
+    id
     login
     repositories(
       after: $after
       first: $first
+      before: $before
       orderBy: { field: PUSHED_AT, direction: DESC }
     ) {
       edges {
@@ -238,6 +139,52 @@ query getRepos($name: String!, $first: Int, $after: String) {
         hasNextPage
         hasPreviousPage
       }
+    }
+  }
+}
+
+#to get the follower detail of the user
+query getFollower($name: String!, $first: Int, $after: String) {
+  user(login: $name) {
+    id
+    followers(first: $first, after: $after) {
+      edges {
+        node {
+          id
+          name
+          avatarUrl
+          login
+        }
+      }
+      pageInfo {
+        hasNextPage
+        startCursor
+        endCursor
+      }
+      totalCount
+    }
+  }
+}
+
+#to get the following detail of the user
+query getFollowing($name: String!, $first: Int, $after: String) {
+  user(login: $name) {
+    id
+    following(first: $first, after: $after) {
+      edges {
+        node {
+          id
+          name
+          avatarUrl
+          login
+        }
+      }
+      pageInfo {
+        hasNextPage
+        startCursor
+        endCursor
+      }
+      totalCount
     }
   }
 }

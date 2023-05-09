@@ -1,28 +1,36 @@
 import { useQuery } from "@apollo/client";
-import { NextPageWithLayout } from "./_app";
 import Repository from "@/components/Repositories/Repository";
 import HomeLayout from "@/components/home/HomeLayout";
 import { GetServerSidePropsContext } from "next";
 import { addApolloState, initializeApollo } from "@/lib/apolloClient";
-import {   GetReposDocument, GetUserDetailDocument } from "@/generated/graphql";
+import {
+  GetUserDetailDocument,
+  GetUsernameDocument,
+} from "@/generated/graphql";
+import Head from "next/head";
 
-const Home: NextPageWithLayout = () => {
-  const { error, loading, data } = useQuery(GetUserDetailDocument);
-  console.log(data);
+const Home = () => {
+  const { data, error } = useQuery(GetUsernameDocument);
 
-  if(error){
-    return <h1>Error is there !</h1>
+  if (error) {
+    return <h1>Seems your github token is not valid</h1>;
   }
+
   return (
-    <main className="bg-slate-900">
-    <HomeLayout>
-      <Repository />
-    </HomeLayout>
-    </main>
+    <>
+      <Head>
+        <title>Github | Repositories</title>
+      </Head>
+      <main>
+        {data?.viewer.login && (
+          <HomeLayout username={data?.viewer.login}>
+            <Repository username={data?.viewer.login} />
+          </HomeLayout>
+        )}
+      </main>
+    </>
   );
 };
-
-
 
 export const getServerSideProps = async ({
   req,
@@ -31,19 +39,16 @@ export const getServerSideProps = async ({
     const userToken = req.cookies?.TOKEN;
     const apolloClient = initializeApollo(null, userToken);
     await apolloClient.query({
-      query: GetUserDetailDocument,
+      query: GetUsernameDocument,
     });
     return addApolloState(apolloClient, {
       props: {},
     });
   } catch (err) {
     return {
-      props :{
-        
-      }
-    }
+      props: {},
+    };
   }
 };
-
 
 export default Home;

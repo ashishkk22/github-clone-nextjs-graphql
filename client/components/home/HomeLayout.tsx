@@ -9,6 +9,7 @@ import CategoryBtn from "./CategoryBtn";
 import { useRouter } from "next/router";
 type HomeLayoutProps = {
   children: ReactNode;
+  username: string;
 };
 
 enum PageSections {
@@ -19,13 +20,14 @@ enum PageSections {
   star = "stars",
 }
 
-const HomeLayout: React.FC<HomeLayoutProps> = ({ children }) => {
+const HomeLayout: React.FC<HomeLayoutProps> = ({ children, username }) => {
   const router = useRouter();
   const activeSection = router.pathname.substring(1, router.pathname.length);
+
   return (
-    <div className="flex flex-col min-h-screen text-white pt-14 bg-slate-900 xl:px-32 lg:flex-row">
+    <div className="flex flex-col min-h-screen text-white bg-black pt-14 xl:px-32 lg:flex-row">
       <div className="flex flex-col items-center basis-1/3">
-        <Sidebar />
+        <Sidebar username={username} />
       </div>
       <div className="m-4 basis-8/12">
         <div className="flex gap-4 overflow-auto">
@@ -38,6 +40,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ children }) => {
             icon={GoRepo}
             name="Repositories"
             isActive={PageSections.repository == activeSection}
+            onClick={() => router.push("/")}
           />
           <CategoryBtn
             icon={AiOutlineProject}

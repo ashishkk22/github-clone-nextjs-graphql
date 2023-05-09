@@ -8,6 +8,7 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import merge from "deepmerge";
 import isEqual from "lodash/isEqual";
+import { relayStylePagination } from "@apollo/client/utilities";
 
 export const APOLLO_STATE_PROP_NAME = "__APOLLO_STATE__";
 
@@ -30,7 +31,19 @@ function createApolloClient(TOKEN?: string) {
     ssrMode: typeof window === "undefined",
     credentials: "include",
     link: authLink.concat(httpLink),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        User: {
+          fields: {
+            repositories: relayStylePagination(),
+            followers: relayStylePagination(),
+            following: relayStylePagination(),
+          },
+        },
+      },
+    }),
+
+    connectToDevTools: true,
   });
 }
 

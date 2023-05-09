@@ -1,15 +1,21 @@
-import React, { ReactElement } from "react";
-import { NextPageWithLayout } from "@/pages/_app";
+import React from "react";
 import RepositoryCard from "./RepositoryCard";
-import { GetServerSidePropsContext } from "next";
-import { addApolloState, initializeApollo } from "@/lib/apolloClient";
 import { GetReposDocument } from "@/generated/graphql";
 import { useQuery } from "@apollo/client";
 import { timeAgo } from "@/utils/dateFormatter";
+import Loader from "../loader/Loader";
 
-const Repository: NextPageWithLayout = () => {
-  const { error, loading, data } = useQuery(GetReposDocument, {
-    variables: { name: "ashishkk22", first: 20, after: null },
+type RepositoryProps = {
+  username: string | undefined;
+};
+
+const Repository: React.FC<RepositoryProps> = ({ username }) => {
+  if (!username) {
+    return null;
+  }
+  const { error, loading, data, fetchMore } = useQuery(GetReposDocument, {
+    variables: { name: username, first: 10, after: null },
+    notifyOnNetworkStatusChange: true,
   });
 
   return (
@@ -23,7 +29,7 @@ const Repository: NextPageWithLayout = () => {
           type="text"
           id="small-input"
           placeholder="Find a repository...."
-          className="block w-[97%] px-2 py-1 text-gray-500 border border-gray-700 rounded-lg sm:text-xs bg-slate-900 focus:border-blue-700"
+          className="block w-[97%] px-2 py-1 text-gray-500 border border-gray-700 rounded-lg  bg-slate-900 focus:border-blue-700"
         />
 
         <button
@@ -49,49 +55,6 @@ const Repository: NextPageWithLayout = () => {
             ></path>
           </svg>
         </button>
-
-        {/* <div
-          id="dropdown"
-          className="z-10 block bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
-        >
-          <ul
-            className="py-2 text-sm text-gray-700 dark:text-gray-200"
-            aria-labelledby="dropdownDefaultButton"
-          >
-            <li>
-              <a
-                href="#"
-                className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-              >
-                Dashboard
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-              >
-                Settings
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-              >
-                Earnings
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-              >
-                Sign out
-              </a>
-            </li>
-          </ul>
-        </div> */}
       </div>
       {data?.user?.repositories?.edges?.map(edge => {
         const title = edge?.node?.name ?? "";
@@ -114,28 +77,29 @@ const Repository: NextPageWithLayout = () => {
           />
         );
       })}
+      <div className="flex justify-center mt-12 text-blue-500">
+        {loading ? (
+          <Loader />
+        ) : (
+          <button
+            className="flex items-center"
+            onClick={() => {
+              fetchMore({
+                variables: {
+                  name: "ashishkk22",
+                  first: 10,
+                  after: data?.user?.repositories.pageInfo.endCursor,
+                },
+              });
+            }}
+            disabled={!data?.user?.repositories.pageInfo.hasNextPage}
+          >
+            Load More
+          </button>
+        )}
+      </div>
     </div>
   );
 };
 
 export default Repository;
-
-export const getServerSideProps = async ({
-  req,
-}: GetServerSidePropsContext) => {
-  try {
-    const userToken = req.cookies?.TOKEN;
-    const apolloClient = initializeApollo(null, userToken);
-    await apolloClient.query({
-      query: GetReposDocument,
-      variables: { name: "ashishkk22", first: 20, after: null },
-    });
-    return addApolloState(apolloClient, {
-      props: {},
-    });
-  } catch (err) {
-    return {
-      props: {},
-    };
-  }
-};

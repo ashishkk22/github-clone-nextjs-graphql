@@ -6,6 +6,7 @@ type CategoryBtnProps = {
   name: string;
   isActive?: boolean;
   count?: number;
+  onClick?: () => void;
 };
 
 const CategoryBtn: React.FC<CategoryBtnProps> = ({
@@ -13,9 +14,10 @@ const CategoryBtn: React.FC<CategoryBtnProps> = ({
   name,
   isActive,
   count,
+  onClick = () => {},
 }) => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col" onClick={() => onClick()}>
       <div
         className={`flex items-center px-2 py-2 rounded-md cursor-pointer hover:bg-slate-800 w-max1 
         `}
