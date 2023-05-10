@@ -21,7 +21,7 @@ const Home = () => {
       <Head>
         <title>Github | Repositories</title>
       </Head>
-      <main>
+      <main className="pt-16">
         {data?.viewer.login && (
           <HomeLayout username={data?.viewer.login}>
             <Repository username={data?.viewer.login} />

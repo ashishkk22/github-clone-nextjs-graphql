@@ -7,7 +7,7 @@ generates:
   generated/:
     preset: "client"
     # disabled plugins due to error of duplicate declaration
-    # plugins:
-    #   - "typescript"
-    #   - "typescript-operations"
+    plugins:
+      - "typescript"
+      - "typescript-operations"
     #   - "typescript-react-apollo"

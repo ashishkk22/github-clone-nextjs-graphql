@@ -16,7 +16,7 @@ const FollowingPage = () => {
       <Head>
         <title>Following | Github</title>
       </Head>
-      <main>
+      <main className="pt-16">
         <HomeLayout username={userId}>
           <Following username={userId} />
         </HomeLayout>

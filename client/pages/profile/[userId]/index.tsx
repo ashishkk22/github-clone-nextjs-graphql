@@ -16,7 +16,7 @@ const ProfilePage = () => {
       <Head>
         <title>Repository | Github</title>
       </Head>
-      <main>
+      <main className="pt-16">
         <HomeLayout username={userId}>
           <Follower username={userId} />
         </HomeLayout>

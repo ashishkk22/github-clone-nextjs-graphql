@@ -39,6 +39,7 @@
     "@graphql-codegen/client-preset": "3.0.1",
     "@graphql-codegen/introspection": "^3.0.1",
     "@types/lodash": "^4.14.194",
+    "tailwind-scrollbar": "^3.0.1",
     "ts-node": "^10.9.1"
   }
 }

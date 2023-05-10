@@ -30,7 +30,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ children, username }) => {
         <Sidebar username={username} />
       </div>
       <div className="m-4 basis-8/12">
-        <div className="flex gap-4 overflow-auto">
+        <div className="flex gap-4 overflow-auto scrollbar-thin scrollbar-tract-gray-900 scrollbar-thumb-gray-600">
           <CategoryBtn
             icon={BsBook}
             name="Overview"

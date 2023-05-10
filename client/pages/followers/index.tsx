@@ -16,7 +16,7 @@ const FollowersPage = () => {
       <Head>
         <title>Follower | Github</title>
       </Head>
-      <main>
+      <main className="pt-16">
         {data?.viewer.login && (
           <HomeLayout username={data?.viewer.login}>
             {data?.viewer.login && <Follower username={data?.viewer.login} />}

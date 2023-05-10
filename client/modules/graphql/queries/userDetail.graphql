@@ -188,3 +188,20 @@ query getFollowing($name: String!, $first: Int, $after: String) {
     }
   }
 }
+
+#get user details by search
+query getUsersBySearch($query: String!, $first: Int, $after: String) {
+  search(query: $query, first: $first, after: $after, type: USER) {
+    edges {
+      node {
+        ... on User {
+          id
+          login
+          name
+          email
+          avatarUrl
+        }
+      }
+    }
+  }
+}
