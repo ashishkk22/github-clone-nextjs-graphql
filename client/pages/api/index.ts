@@ -22,14 +22,3 @@ export function registerUser(payload: {
 export function loginUser(payload: { username: string; password: string }) {
   return API.post("/user/signin", payload).then(res => res.data);
 }
-
-// export function getMe() {
-//   return axios
-//     .get(userBase, {
-//       withCredentials: true,
-//     })
-//     .then(res => res.data)
-//     .catch(() => {
-//       return null;
-//     });
-// }

@@ -1,3 +1,4 @@
+import Repository from "@/components/Repositories/Repository";
 import Follower from "@/components/follower/Follower";
 import HomeLayout from "@/components/home/HomeLayout";
 import Head from "next/head";
@@ -18,7 +19,7 @@ const ProfilePage = () => {
       </Head>
       <main className="pt-16">
         <HomeLayout username={userId}>
-          <Follower username={userId} />
+          <Repository username={userId} />
         </HomeLayout>
       </main>
     </>

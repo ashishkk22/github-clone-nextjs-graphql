@@ -3,10 +3,7 @@ import Repository from "@/components/Repositories/Repository";
 import HomeLayout from "@/components/home/HomeLayout";
 import { GetServerSidePropsContext } from "next";
 import { addApolloState, initializeApollo } from "@/lib/apolloClient";
-import {
-  GetUserDetailDocument,
-  GetUsernameDocument,
-} from "@/generated/graphql";
+import { GetUsernameDocument } from "@/generated/graphql";
 import Head from "next/head";
 
 const Home = () => {

@@ -4,12 +4,12 @@ import SearchBar from "./SearchBar";
 import Category from "./Category";
 import Profile from "./Profile";
 import { GiHamburgerMenu } from "react-icons/gi";
-
 import { useRouter } from "next/router";
-
 import SearchModal from "./SearchModal";
 import { useQuery } from "@apollo/client";
 import { GetUserDetailDocument } from "@/generated/graphql";
+import { GetServerSidePropsContext } from "next";
+import { addApolloState, initializeApollo } from "@/lib/apolloClient";
 
 const Navbar = () => {
   const router = useRouter();
@@ -22,6 +22,8 @@ const Navbar = () => {
   ];
 
   const { data, error } = useQuery(GetUserDetailDocument);
+
+  if (error) return null;
 
   const [isOpen, toggler] = useReducer(state => !state, false);
 
@@ -56,3 +58,22 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+export const getServerSideProps = async ({
+  req,
+}: GetServerSidePropsContext) => {
+  try {
+    const userToken = req.cookies?.TOKEN;
+    const apolloClient = initializeApollo(null, userToken);
+    await apolloClient.query({
+      query: GetUserDetailDocument,
+    });
+    return addApolloState(apolloClient, {
+      props: {},
+    });
+  } catch (err) {
+    return {
+      props: {},
+    };
+  }
+};

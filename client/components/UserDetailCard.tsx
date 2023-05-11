@@ -17,11 +17,15 @@ const UserDetailCard: React.FC<UserDetailCardProps> = ({
   onClick = () => {},
 }) => {
   if (!image) return null;
+
   return (
     <div className="mt-4 mr-2">
       <hr className="h-px bg-gray-700 border-0" />
       <div className="flex justify-center mt-4 items-between">
-        <div className="flex w-full gap-2 lg:gap-8">
+        <div
+          className="flex w-full gap-2 cursor-pointer lg:gap-8"
+          onClick={onClick}
+        >
           <div className="rounded-full min-w-fit">
             <Image
               src={image}

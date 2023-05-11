@@ -3,16 +3,23 @@ import FollowingCard from "../UserDetailCard";
 import { useQuery } from "@apollo/client";
 import { GetFollowingDocument } from "@/generated/graphql";
 import Loader from "../loader/Loader";
+import { useRouter } from "next/router";
 
 type FollowingProps = {
   username: string;
+  btnType: string;
 };
 
-const Following: React.FC<FollowingProps> = ({ username }) => {
+const Following: React.FC<FollowingProps> = ({ username, btnType }) => {
+  const router = useRouter();
+
   const { data, error, loading, fetchMore } = useQuery(GetFollowingDocument, {
     variables: { name: username, first: 7, after: null },
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: "cache-and-network",
   });
+
+  if (error) return null;
 
   return (
     <div className="w-[93%]">
@@ -26,7 +33,8 @@ const Following: React.FC<FollowingProps> = ({ username }) => {
             login={login}
             image={image}
             key={user?.node?.id}
-            btnText="unfollow"
+            btnText={btnType}
+            onClick={() => router.push(login ? `/profile/${login}` : "/")}
           />
         );
       })}
@@ -35,10 +43,11 @@ const Following: React.FC<FollowingProps> = ({ username }) => {
           <Loader />
         ) : (
           <button
+            className="disabled:opacity-0"
             onClick={() => {
               fetchMore({
                 variables: {
-                  name: "ashishkk22",
+                  name: username,
                   first: 7,
                   after: data?.user?.following.pageInfo.endCursor,
                 },

@@ -42,7 +42,11 @@ function createApolloClient(TOKEN?: string) {
         },
       },
     }),
-
+    defaultOptions: {
+      query: {
+        fetchPolicy: "network-only",
+      },
+    },
     connectToDevTools: true,
   });
 }

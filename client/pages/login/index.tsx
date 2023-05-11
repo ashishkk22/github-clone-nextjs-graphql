@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { loginUser } from "../api";
 import Head from "next/head";
+import { toast } from "react-hot-toast";
 
 type FormValues = {
   username: string;
@@ -24,10 +25,17 @@ const LoginPage = () => {
   });
   async function onSubmit(values: FormValues) {
     try {
-      await loginUser({
-        username: values.username,
-        password: values.password,
-      });
+      await toast.promise(
+        loginUser({
+          username: values.username,
+          password: values.password,
+        }),
+        {
+          loading: "Please wait...",
+          success: "Login Successfully",
+          error: "Invalid Credentials",
+        }
+      );
       router.push("/");
     } catch (err: any) {}
   }

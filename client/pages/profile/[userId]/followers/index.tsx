@@ -17,7 +17,7 @@ const FollowersPage = () => {
       </Head>
       <main className="pt-16">
         <HomeLayout username={userId}>
-          <Follower username={userId} />
+          <Follower username={userId} btnType="See Profile" />
         </HomeLayout>
       </main>
     </>

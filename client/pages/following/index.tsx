@@ -19,7 +19,9 @@ const FollowingPage = () => {
       <main className="pt-16">
         {data?.viewer.login && (
           <HomeLayout username={data?.viewer.login}>
-            {data?.viewer.login && <Following username={data?.viewer.login} />}
+            {data?.viewer.login && (
+              <Following username={data?.viewer.login} btnType="Follow Back" />
+            )}
           </HomeLayout>
         )}
       </main>

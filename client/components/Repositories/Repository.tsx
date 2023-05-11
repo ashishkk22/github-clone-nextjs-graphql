@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import RepositoryCard from "./RepositoryCard";
 import { GetReposDocument } from "@/generated/graphql";
 import { useQuery } from "@apollo/client";
@@ -10,12 +10,20 @@ type RepositoryProps = {
 };
 
 const Repository: React.FC<RepositoryProps> = ({ username }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+
   if (!username) {
     return null;
   }
+
   const { error, loading, data, fetchMore } = useQuery(GetReposDocument, {
     variables: { name: username, first: 10, after: null },
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: "cache-and-network",
+  });
+
+  const filteredData = data?.user?.repositories.edges?.filter(repo => {
+    return repo?.node?.name.includes(searchQuery);
   });
 
   return (
@@ -29,64 +37,53 @@ const Repository: React.FC<RepositoryProps> = ({ username }) => {
           type="text"
           id="small-input"
           placeholder="Find a repository...."
-          className="block w-[97%] px-2 py-1 text-gray-500 border border-gray-700 rounded-lg  bg-slate-900 focus:border-blue-700"
+          className="block w-full px-2 py-2 text-gray-500 border border-gray-700 rounded-lg bg-slate-900 focus:border-blue-700"
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
         />
-
-        <button
-          id="dropdownDefaultButton"
-          data-dropdown-toggle="dropdown"
-          className="text-white bg-slate-800 hover:bg-slate-800 border-slate-400 border-[1px] font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center"
-          type="button"
-        >
-          Type
-          <svg
-            className="w-4 h-4 ml-2"
-            aria-hidden="true"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M19 9l-7 7-7-7"
-            ></path>
-          </svg>
-        </button>
       </div>
-      {data?.user?.repositories?.edges?.map(edge => {
-        const title = edge?.node?.name ?? "";
-        const type = edge?.node?.visibility ?? "";
-        let language = "Javascript";
-        let color = "";
-        if (edge?.node?.languages?.edges?.length) {
-          color = edge?.node?.languages?.edges[0]?.node.color ?? "";
-          language = edge?.node?.languages?.edges[0]?.node.name ?? language;
-        }
-        let time = timeAgo(edge?.node?.pushedAt) ?? "";
-        return (
-          <RepositoryCard
-            key={edge?.cursor}
-            title={title}
-            type={type}
-            language={language}
-            languageColor={color}
-            time={time}
-          />
-        );
-      })}
+      {filteredData?.length && filteredData.length >= 0 ? (
+        <>
+          {filteredData?.map(edge => {
+            const title = edge?.node?.name ?? "";
+            const type = edge?.node?.visibility ?? "";
+            let language = "Javascript";
+            let color = "";
+            if (edge?.node?.languages?.edges?.length) {
+              color = edge?.node?.languages?.edges[0]?.node.color ?? "";
+              language = edge?.node?.languages?.edges[0]?.node.name ?? language;
+            }
+            let time = timeAgo(edge?.node?.pushedAt) ?? "";
+            return (
+              <RepositoryCard
+                key={edge?.cursor}
+                title={title}
+                type={type}
+                language={language}
+                languageColor={color}
+                time={time}
+              />
+            );
+          })}
+        </>
+      ) : (
+        <div className="text-center text-blue opacity-60">
+          {searchQuery && "Opps ! Repository not found !"}
+        </div>
+      )}
+
       <div className="flex justify-center mt-12 text-blue-500">
         {loading ? (
           <Loader />
         ) : (
           <button
-            className="flex items-center"
+            className={`text-center text-blue-500 disabled:opacity-0 ${
+              searchQuery !== "" ? "opacity-0" : ""
+            }`}
             onClick={() => {
               fetchMore({
                 variables: {
-                  name: "ashishkk22",
+                  name: username,
                   first: 10,
                   after: data?.user?.repositories.pageInfo.endCursor,
                 },

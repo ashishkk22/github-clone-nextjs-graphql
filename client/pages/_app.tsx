@@ -6,6 +6,8 @@ import type { NextPage } from "next";
 import type { AppProps } from "next/app";
 import Navbar from "@/components/navbar/Navbar";
 import { useRouter } from "next/router";
+import Footer from "@/components/footer/Footer";
+import { Toaster } from "react-hot-toast";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -25,8 +27,10 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const apolloClient = useApollo(pageProps);
   return getLayout(
     <ApolloProvider client={apolloClient}>
+      <Toaster />
       {!isRestricted && <Navbar />}
       <Component {...pageProps} />
+      {!isRestricted && <Footer />}
     </ApolloProvider>
   );
 }

@@ -48,8 +48,10 @@ query GetUsername {
 # to get the user based on the userId
 query GetUserDetailByUserId($name: String!) {
   user(login: $name) {
+    id
     avatarUrl
     name
+    bio
     login
     location
     email
@@ -92,33 +94,6 @@ query getRepos($name: String!, $first: Int, $after: String, $before: String) {
           pushedAt
           stargazers(first: $first) {
             totalCount
-          }
-          refs(
-            refPrefix: "refs/heads/"
-            orderBy: { direction: DESC, field: TAG_COMMIT_DATE }
-            first: 2
-          ) {
-            edges {
-              node {
-                name
-                id
-                target {
-                  ... on Commit {
-                    history(first: 1) {
-                      edges {
-                        node {
-                          committedDate
-                          author {
-                            name
-                          }
-                          message
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
           }
           languages(first: $first) {
             edges {

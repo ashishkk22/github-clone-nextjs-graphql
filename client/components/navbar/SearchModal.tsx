@@ -32,9 +32,11 @@ const SearchModal: FC<SearchModalProps> = ({ handleClose }) => {
     setQuery(e.target.value);
     loadData();
   };
+
   if (error) {
     return null;
   }
+
   return (
     <div className="fixed z-10 flex items-center justify-center w-screen h-screen text-white backdrop-blur-sm">
       <div className="relative rounded-lg shadow bg-slate-900 border-[1px] border-slate-800  sm:w-3/5 lg:w-3/5 xl:w-2/3 2xl:w-2/4 px-2 md:px-10 h-[75vh]">

@@ -5,7 +5,7 @@ import { HiOutlineMail } from "react-icons/hi";
 import { useQuery } from "@apollo/client";
 import { GetUserDetailByUserIdDocument } from "@/generated/graphql";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import Loader from "../loader/Loader";
 
 type SidebarProps = {
@@ -19,6 +19,7 @@ const Sidebar: React.FC<SidebarProps> = ({ username }) => {
     },
   });
   const router = useRouter();
+  const userId = router.query.userId as string | undefined;
   if (error) {
     return <div>Please enter the valid github token</div>;
   }
@@ -51,10 +52,19 @@ const Sidebar: React.FC<SidebarProps> = ({ username }) => {
       <button className="mt-4 border-[1px] bg-slate-800	 opacity-70 w-full rounded-lg p-1 border-slate-500	">
         Edit profile
       </button>
-      <div className="flex items-center self-start mt-4">
+      {data?.user?.bio && (
+        <div className="self-start mt-3 text-lg opacity-70">
+          {data.user.bio}
+        </div>
+      )}
+      <div className="flex items-center self-start mt-2">
         <div
           className="flex items-center cursor-pointer"
-          onClick={() => router.push("/followers")}
+          onClick={() =>
+            router.push(
+              `${userId ? `/profile/${userId}/followers` : "/followers"} `
+            )
+          }
         >
           <span className="opacity-50">
             <BsPeople />
@@ -68,21 +78,29 @@ const Sidebar: React.FC<SidebarProps> = ({ username }) => {
         </div>
         <div
           className="flex items-center cursor-pointer"
-          onClick={() => router.push("/following")}
+          onClick={() =>
+            router.push(
+              `${userId ? `/profile/${userId}/following` : "/following"} `
+            )
+          }
         >
           &nbsp;
-          <span>{data?.user?.following.totalCount}</span>
+          <span>{data?.user?.following.totalCount}</span> &nbsp;
           <span className="opacity-50">following</span>
         </div>
       </div>
-      <div className="flex items-center self-start mt-2">
-        <IoLocationOutline className="mr-1 opacity-50" />
-        <span>{data?.user?.location}</span>
-      </div>
-      <div className="flex items-center self-start mt-2">
-        <HiOutlineMail className="mr-1 opacity-50" />
-        <span>{data?.user?.email}</span>
-      </div>
+      {data?.user?.location && (
+        <div className="flex items-center self-start mt-2">
+          <IoLocationOutline className="mr-1 opacity-50" />
+          <span>{data?.user?.location}</span>
+        </div>
+      )}
+      {data?.user?.email && (
+        <div className="flex items-center self-start mt-2">
+          <HiOutlineMail className="mr-1 opacity-50" />
+          <span>{data?.user?.email}</span>
+        </div>
+      )}
     </div>
   );
 };

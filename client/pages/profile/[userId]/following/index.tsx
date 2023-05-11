@@ -18,7 +18,7 @@ const FollowingPage = () => {
       </Head>
       <main className="pt-16">
         <HomeLayout username={userId}>
-          <Following username={userId} />
+          <Following username={userId} btnType="See Profile" />
         </HomeLayout>
       </main>
     </>

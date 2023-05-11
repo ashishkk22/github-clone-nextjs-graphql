@@ -4,20 +4,27 @@ import type { NextRequest } from "next/server";
 
 export default function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
-  let isLogin = request.cookies.get("TOKEN");
+  let isLogin = request.cookies.get("TOKEN")?.value;
   if (!isLogin) {
-    if (url.pathname === "/") {
+    if (url.pathname !== "/login" && url.pathname !== "/signup") {
       return NextResponse.redirect(new URL("/login", request.url));
     }
-  }
-  if (isLogin) {
+  } else {
     if (url.pathname === "/login" || url.pathname === "/signup") {
       return NextResponse.redirect(new URL("/", request.url));
     }
   }
 }
 
-// See "Matching Paths" below to learn more
-// export const config = {
-//   matcher: "/about/:path*",
-// };
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+  ],
+};

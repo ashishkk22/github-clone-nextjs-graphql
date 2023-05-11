@@ -5,6 +5,7 @@ import { SignupSchema } from "@/validations/signupSchema";
 import { registerUser } from "../api";
 import { useRouter } from "next/navigation";
 import Head from "next/head";
+import { toast } from "react-hot-toast";
 
 type FormValues = {
   username: string;
@@ -29,15 +30,22 @@ const SignUpPage = () => {
 
   async function onSubmit(values: FormValues) {
     try {
-      const userData = await registerUser({
-        username: values.username,
-        password: values.password,
-        token: values.token,
-      });
-      console.log(userData);
+      await toast.promise(
+        registerUser({
+          username: values.username,
+          password: values.password,
+          token: values.token,
+        }),
+        {
+          loading: "Please wait...",
+          success: "Registered successfully",
+          error: "Error: could not register user",
+        }
+      );
       router.push("/");
     } catch (err: any) {}
   }
+
   return (
     <>
       <Head>

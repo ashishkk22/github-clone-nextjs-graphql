@@ -1,6 +1,5 @@
 import React, { ReactNode } from "react";
 import Sidebar from "../sidebar/Sidebar";
-import Repository from "../Repositories/Repository";
 import { BsBook } from "react-icons/bs";
 import { AiOutlineProject, AiOutlineStar } from "react-icons/ai";
 import { GoRepo } from "react-icons/go";
@@ -22,6 +21,7 @@ enum PageSections {
 
 const HomeLayout: React.FC<HomeLayoutProps> = ({ children, username }) => {
   const router = useRouter();
+  const userId = router.query.userId as string | undefined;
   const activeSection = router.pathname.substring(1, router.pathname.length);
 
   return (
@@ -40,7 +40,9 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ children, username }) => {
             icon={GoRepo}
             name="Repositories"
             isActive={PageSections.repository == activeSection}
-            onClick={() => router.push("/")}
+            onClick={() =>
+              router.push(`${userId ? `/profile/${userId}` : "/"} `)
+            }
           />
           <CategoryBtn
             icon={AiOutlineProject}
